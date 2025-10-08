@@ -102,7 +102,7 @@ class DocgiaService {
             throw new Error("Số điện thoại hoặc mật khẩu không chính xác");
         }
 
-        return { role: "DOCGIA", user: docGia };
+        return { role: "docgia", user: docGia };
     }
 
     async registerDocGia(data) {

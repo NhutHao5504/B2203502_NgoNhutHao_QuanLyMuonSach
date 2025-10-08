@@ -3,7 +3,7 @@ const MongoDB = require('../utils/mongodb.util');
 const ApiError = require('../api-error');
 
 exports.create = async (req, res, next) => {
-    if (!req.body?.maDG || !req.body?.maSach) {
+    if (!req.body?.MADOCGIA || !req.body?.MASACH) {
         return next(new ApiError(400, 'Mã đọc giả và mã sách không được bỏ trống'));
     }
     try {
@@ -18,15 +18,15 @@ exports.create = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const theodoiService = new TheodoiService(MongoDB.client);
-        const { maDG, maSach, ngayMuon, trangThai } = req.query;
+        const { MADOCGIA, MASACH, NGAYMUON, trangThai } = req.query;
 
         let documents = [];
-        if (maDG) {
-            documents = await theodoiService.findByMaDG(maDG);
-        } else if (maSach) {
-            documents = await theodoiService.findByMaSach(maSach);
-        } else if (ngayMuon) {
-            documents = await theodoiService.findByNgayMuon(ngayMuon);
+        if (MADOCGIA) {
+            documents = await theodoiService.findByMaDG(MADOCGIA);
+        } else if (MASACH) {
+            documents = await theodoiService.findByMaSach(MASACH);
+        } else if (NGAYMUON) {
+            documents = await theodoiService.findByNgayMuon(NGAYMUON);
         } else if (trangThai) {
             documents = await theodoiService.findByTrangthai(trangThai);
         } else {
@@ -99,9 +99,9 @@ exports.deleteAll = async (req, res, next) => {
 
 exports.dangKyMuonSach = async (req, res, next) => {
     try {
-        const { docGiaID, maSach, soQuyen, ngayMuon } = req.body;
+        const { docGiaID, MASACH, SOQUYEN, NGAYMUON } = req.body;
         const theodoiService = new TheodoiService(MongoDB.client);
-        const result = await theodoiService.dangKyMuonSach(docGiaID, maSach, soQuyen, ngayMuon);
+        const result = await theodoiService.dangKyMuonSach(docGiaID, MASACH, SOQUYEN, NGAYMUON);
         return res.send(result);
     } catch (error) {
         return next(new ApiError(400, error.message));

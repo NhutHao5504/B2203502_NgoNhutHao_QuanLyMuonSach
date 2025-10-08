@@ -95,7 +95,7 @@ class TheodoiService {
         }
 
         if (sach.SOQUYEN < SOQUYEN) {
-            throw new Error(`Sách ${sach.tenSach} chỉ còn ${sach.SOQUYEN} quyển, không đủ số lượng yêu cầu`);
+            throw new Error(`Sách ${sach.TENSACH} chỉ còn ${sach.SOQUYEN} quyển, không đủ số lượng yêu cầu`);
         }
 
         const theodoi = await this.extractTheodoiData({
