@@ -8,8 +8,15 @@ class SachService {
     }
 
     async extractSachData(payload) {
-        const count = await this.Sach.countDocuments();
-        const maS = payload.MASACH || `Sach${String(count + 1).padStart(3, '0')}`;
+        const lastSach = await this.Sach.find().sort({ MASACH: -1 }).limit(1).toArray();
+        let nextNumber = 1;
+
+        if (lastSach.length > 0) {
+            const lastMa = lastSach[0].MASACH.replace(/\D/g, ''); // Lấy phần số
+            nextNumber = parseInt(lastMa) + 1;
+        }
+
+const maS = payload.MASACH || `Sach${String(nextNumber).padStart(3, '0')}`;
         const sach = {
             _id: payload._id,
             MASACH: maS,
