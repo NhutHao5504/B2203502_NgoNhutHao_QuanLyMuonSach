@@ -16,7 +16,7 @@ class SachService {
             nextNumber = parseInt(lastMa) + 1;
         }
 
-const maS = payload.MASACH || `Sach${String(nextNumber).padStart(3, '0')}`;
+        const maS = payload.MASACH || `Sach${String(nextNumber).padStart(3, '0')}`;
         const sach = {
             _id: payload._id,
             MASACH: maS,
