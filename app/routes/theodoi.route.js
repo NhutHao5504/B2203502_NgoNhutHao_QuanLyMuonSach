@@ -22,4 +22,8 @@ router.route('/duyetMuonSach/:id')
 router.route('/xacNhanTraSach/:id')
     .put(theodoi.xacNhanTraSach);
 
+router.route('/baoMatSach/:id')
+    .put(theodoi.baoMatSach);
+
+
 module.exports = router;

@@ -128,3 +128,13 @@ exports.xacNhanTraSach = async (req, res, next) => {
         return next(new ApiError(400, error.message));
     }
 };
+
+exports.baoMatSach = async (req, res, next) => {
+  try {
+    const theodoiService = new TheodoiService(MongoDB.client);
+    const result = await theodoiService.baoMatSach(req.params.id, req.body.lyDo);
+    res.json(result);
+  } catch (error) {
+    next(new ApiError(400, error.message));
+  }
+};
