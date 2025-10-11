@@ -157,45 +157,43 @@ class TheodoiService {
     }
 
     async baoMatSach(id, lyDo) {
-  const muonSach = await this.findById(id);
-  if (!muonSach) throw new Error('Không tìm thấy yêu cầu mượn sách');
+        const muonSach = await this.findById(id);
+        if (!muonSach) throw new Error('Không tìm thấy yêu cầu mượn sách');
 
-  if (muonSach.trangThai !== 'Đang mượn') {
-    throw new Error('Chỉ có thể báo mất sách khi trạng thái là "Đang mượn"');
-  }
+        if (muonSach.trangThai !== 'Đang mượn') {
+            throw new Error('Chỉ có thể báo mất sách khi trạng thái là "Đang mượn"');
+        }
 
-  const sach = await this.Sach.findOne({ MASACH: muonSach.MASACH });
-  if (!sach) throw new Error(`Không tìm thấy thông tin sách với mã ${muonSach.MASACH}`);
+        const sach = await this.Sach.findOne({ MASACH: muonSach.MASACH });
+        if (!sach) throw new Error(`Không tìm thấy thông tin sách với mã ${muonSach.MASACH}`);
 
-  const tienBoiThuong = sach.DONGIA * muonSach.SOQUYEN;
+        const tienBoiThuong = sach.DONGIA * muonSach.SOQUYEN;
 
-  // ✅ Trừ sách khỏi kho (nếu bạn chưa trừ khi duyệt mượn)
-  await this.Sach.updateOne(
-    { MASACH: muonSach.MASACH },
-    { $inc: { SOQUYEN: -muonSach.SOQUYEN } }
-  );
+        // Tru sach khoi kho sach
+        await this.Sach.updateOne(
+            { MASACH: muonSach.MASACH },
+            { $inc: { SOQUYEN: -muonSach.SOQUYEN } }
+        );
 
-  // ✅ Cập nhật thông tin trong THEODOIMUONSACH
-  await this.Theodoi.updateOne(
-    { _id: new ObjectId(id) },
-    {
-      $set: {
-        trangThai: 'Mất sách',
-        TIENBOITHUONG: tienBoiThuong,
-        NGAYTRA: new Date(),
-        GHI_CHU: lyDo || ''
-      }
-    }
-  );
+        // Cập nhật thông tin trong THEODOIMUONSACH
+        await this.Theodoi.updateOne(
+            { _id: new ObjectId(id) },
+            {
+            $set: {
+                trangThai: 'Mất sách',
+                TIENBOITHUONG: tienBoiThuong,
+                NGAYTRA: new Date(),
+                GHI_CHU: lyDo || ''
+            }
+            }
+        );
 
-  return {
-    message: `📕 Báo mất sách thành công. Độc giả phải bồi thường ${tienBoiThuong.toLocaleString()} VNĐ.`,
-    sach: sach.TENSACH,
-    tienBoiThuong
-  };
-}
-
-    
+        return {
+            message: `Báo mất sách thành công. Độc giả phải bồi thường ${tienBoiThuong.toLocaleString()} VNĐ.`,
+            sach: sach.TENSACH,
+            tienBoiThuong
+        };
+    } 
 }
 
 module.exports = TheodoiService;
