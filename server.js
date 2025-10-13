@@ -2,6 +2,9 @@ const app = require("./app");
 const config = require("./app/config");
 const MongoDB = require("./app/utils/mongodb.util");
 
+require("dotenv").config();
+console.log("🔑 GEMINI_API_KEY:", process.env.GEMINI_API_KEY ? "Loaded ✅" : "❌ Not found");
+
 async function startServer() {
     try {
         await MongoDB.connect(config.db.uri);

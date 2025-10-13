@@ -6,6 +6,7 @@ const nhanvienRouter = require('./app/routes/nhanvien.route');
 const nxbRouter = require('./app/routes/nxb.route');
 const sachRouter = require('./app/routes/sach.route');
 const theodoiRouter = require('./app/routes/theodoi.route');
+const chatbotRouter = require("./app/routes/chatbot.route");
 
 const ApiError = require('./app/api-error');
 
@@ -24,6 +25,7 @@ app.use("/api/nhanvien", nhanvienRouter);
 app.use("/api/nxb", nxbRouter);
 app.use("/api/sach", sachRouter);
 app.use("/api/theodoi", theodoiRouter);
+app.use("/api/chatbot", chatbotRouter);
 
 app.use((req, res, next) => {
     return next(new ApiError(404, 'Resource not found'));
