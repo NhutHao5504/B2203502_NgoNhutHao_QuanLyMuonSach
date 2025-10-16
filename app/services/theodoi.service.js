@@ -84,20 +84,38 @@ class TheodoiService {
         }
 
         const _id = new ObjectId(docGiaID);
+
+        // 🔹 1️⃣ Kiểm tra độc giả có tồn tại không
         const docGia = await this.Docgia.findOne({ _id });
         if (!docGia) {
             throw new Error(`Không tìm thấy độc giả với mã: ${_id}`);
         }
 
+        // 🔹 2️⃣ Kiểm tra sách có tồn tại không
         const sach = await this.Sach.findOne({ MASACH });
         if (!sach) {
             throw new Error(`Không tìm thấy sách với mã: ${MASACH}`);
         }
 
+        // 🔹 3️⃣ Kiểm tra đủ số lượng sách không
         if (sach.SOQUYEN < SOQUYEN) {
             throw new Error(`Sách ${sach.TENSACH} chỉ còn ${sach.SOQUYEN} quyển, không đủ số lượng yêu cầu`);
         }
 
+        // 🔹 4️⃣ Đếm tổng số sách độc giả này đang mượn (chưa trả)
+        const sachDangMuon = await this.Theodoi.find({
+            MADOCGIA: docGiaID,
+            trangThai: { $in: ['Đang mượn', 'Chờ duyệt'] } // tùy hệ thống của bạn
+        }).toArray();
+
+        const tongSoSachDangMuon = sachDangMuon.reduce((sum, item) => sum + (item.SOQUYEN || 0), 0);
+
+        // 🔹 5️⃣ Nếu tổng số vượt quá 5, không cho mượn
+        if (tongSoSachDangMuon + SOQUYEN > 5) {
+            throw new Error(`Mỗi độc giả chỉ được mượn tối đa 5 quyển. Hiện tại bạn đã mượn ${tongSoSachDangMuon} quyển.`);
+        }
+
+        // 🔹 6️⃣ Nếu hợp lệ thì tạo phiếu mượn
         const theodoi = await this.extractTheodoiData({
             MADOCGIA: docGiaID,
             MASACH,
@@ -107,7 +125,11 @@ class TheodoiService {
         });
 
         await this.Theodoi.insertOne(theodoi);
-        return { message: 'Đăng ký mượn sách thành công, vui lòng chờ duyệt', theodoi };
+
+        return {
+            message: 'Đăng ký mượn sách thành công, vui lòng chờ duyệt',
+            theodoi
+        };
     }
 
     async duyetMuonSach(id) {
