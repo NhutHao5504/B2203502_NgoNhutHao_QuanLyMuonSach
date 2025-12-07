@@ -7,17 +7,15 @@ exports.chatWithBot = async (req, res) => {
     // Kiểm tra message có tồn tại không
     if (!message || message.trim() === "") {
       return res.json({
-        reply: `👋 Xin chào! Tôi là chatbot thư viện thông minh.<br><br>
+        reply: `👋 Xin chào! Tôi là chatbot thư viện thông minh.<br>
         <strong>Những gì tôi có thể giúp bạn:</strong>
         <ul>
-          <li>🔍 <strong>Tìm sách:</strong> "Tìm sách về lập trình", "Sách của Nguyễn Nhật Ánh"</li>
-          <li>📚 <strong>Xem sách đang mượn:</strong> "Tôi đang mượn sách nào?"</li>
-          <li>📋 <strong>Quy định:</strong> "Quy định mượn sách", "Phạt trả muộn thế nào?"</li>
-          <li>⏰ <strong>Giờ mở cửa:</strong> "Thư viện mở cửa lúc mấy giờ?"</li>
-          <li>📖 <strong>Mượn sách:</strong> "Tôi muốn mượn sách Harry Potter"</li>
-          <li>📝 <strong>Tóm tắt sách:</strong> "Tóm tắt sách Nhà giả kim"</li>
+          <li><strong>Xem thông tin sách:</strong> "Thông tin sách?"</li>
+          <li><strong>Xem sách đang mượn:</strong> "Phiếu mượn của tôi?"</li>
+          <li><strong>Quy định:</strong> "Quy định mượn sách", "Phạt trả muộn thế nào?"</li>
+          <li><strong>Giờ mở cửa:</strong> "Thư viện mở cửa lúc mấy giờ?"</li>
+          <li><strong>Mượn sách:</strong> "Tôi muốn mượn sách Harry Potter"</li>
         </ul>
-        <br>
         <small><i>Hãy nhập câu hỏi của bạn vào ô bên dưới nhé!</i></small>`,
       });
     }
@@ -58,7 +56,7 @@ exports.resetChatHistory = (req, res) => {
     if (result) {
       return res.json({ 
         success: true, 
-        message: "✅ Đã reset lịch sử chat cho người dùng." 
+        message: "Đã reset lịch sử chat cho người dùng." 
       });
     } else {
       return res.json({ 

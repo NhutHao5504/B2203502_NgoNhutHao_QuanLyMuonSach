@@ -16,9 +16,6 @@ const modelName = "deepseek/deepseek-chat";
 // Lưu lịch sử chat
 const chatHistories = {}; 
 
-// =====================================================
-// 🧠 HÀM CHAT CHÍNH - ĐÃ SỬA ĐỂ KHÔNG HIỆN THÔNG BÁO LỖI
-// =====================================================
 async function handleChat(message, docGiaId, docGiaMongoId) {
   const sachService = new SachService(MongoDB.client);
   const theodoiService = new TheodoiService(MongoDB.client);
@@ -37,7 +34,6 @@ async function handleChat(message, docGiaId, docGiaMongoId) {
   const lower = message.toLowerCase();
   let context = "";
 
-  // ===== GIỮ NGUYÊN TOÀN BỘ LOGIC XỬ LÝ =====
   if (lower.includes("sách") && !lower.includes("tóm tắt")) {
     context = await getBookInfo(lower, sachService);
   }
@@ -88,12 +84,12 @@ async function handleChat(message, docGiaId, docGiaMongoId) {
     context = getDefaultReply();
   }
 
-  // KIỂM TRA: Nếu context đã đủ thông tin, trả về luôn không cần gọi AI
+
   if (shouldReturnDirectly(context, lower)) {
     return context;
   }
 
-  // Nếu cần xử lý ngôn ngữ tự nhiên, gọi AI
+
   const systemPrompt = `Bạn là trợ lý ảo thân thiện của thư viện. Hãy trả lời câu hỏi dựa trên dữ liệu thư viện được cung cấp.
   
   QUY TẮC:
@@ -108,9 +104,6 @@ async function handleChat(message, docGiaId, docGiaMongoId) {
   ${context}`;
 
   try {
-    // ============================
-    // 🔥 GỌI OPENROUTER API (DEEPSEEK)
-    // ============================
     const completion = await genAI.chat.completions.create({
       model: modelName,
       messages: [
@@ -142,9 +135,7 @@ async function handleChat(message, docGiaId, docGiaMongoId) {
   }
 }
 
-// =====================================================
-// 🆕 HÀM KIỂM TRA CÓ NÊN TRẢ VỀ TRỰC TIẾP KHÔNG
-// =====================================================
+
 function shouldReturnDirectly(context, lowerMessage) {
   // Kiểm tra nếu context đã là câu trả lời đầy đủ
   const completeResponseIndicators = [
@@ -168,7 +159,6 @@ function shouldReturnDirectly(context, lowerMessage) {
     }
   }
   
-  // Kiểm tra độ dài context - nếu ngắn (< 50 ký tự) thì cho AI xử lý
   if (context.length < 50) {
     return false;
   }
@@ -189,9 +179,7 @@ function shouldReturnDirectly(context, lowerMessage) {
   return false;
 }
 
-// =====================================================
-// 🟦 CÁC HÀM HỖ TRỢ (GIỮ NGUYÊN)
-// =====================================================
+
 async function getBookInfo(lower, sachService) {
   const allBooks = await sachService.find({});
   let keyword = lower
@@ -248,7 +236,6 @@ async function getBookInfo(lower, sachService) {
     <li>Số lượng còn lại: ${s.SOQUYEN}</li>
     <li>Giá: ${s.DONGIA.toLocaleString()}đ</li>
     <li>Mã sách: ${s.MASACH || s._id}</li>
-    <li>ID: ${s._id}</li>
   </ul>
   ${
     s.SOQUYEN > 0
