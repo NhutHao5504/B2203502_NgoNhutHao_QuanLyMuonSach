@@ -3,7 +3,7 @@ const config = require("./app/config");
 const MongoDB = require("./app/utils/mongodb.util");
 
 require("dotenv").config();
-console.log("🔑 GEMINI_API_KEY:", process.env.GEMINI_API_KEY ? "Loaded ✅" : "❌ Not found");
+console.log("OPENROUTER_API_KEY:", process.env.OPENROUTER_API_KEY ? "Loaded" : "Not found");
 
 async function startServer() {
     try {
